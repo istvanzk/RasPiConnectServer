@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 # Filename: ExecuteSendText.py
 # Version 1.0 04/13/13 JS MiloCreek
+# Version 3.0 04.04.2016 IzK (Python3.4+)
 
 import Config
 
@@ -15,28 +16,28 @@ import time
 
 def Execute_Send_Text(root):
 
-        # find the interface object type
+	# find the interface object type
 
-        objectServerID = root.find("./OBJECTSERVERID").text
-        objectFlags = root.find("./OBJECTFLAGS").text
-        objectAction = root.find("./OBJECTACTION").text
+	objectServerID = root.find("./OBJECTSERVERID").text
+	objectFlags = root.find("./OBJECTFLAGS").text
+	objectAction = root.find("./OBJECTACTION").text
 
 	if (objectAction == None):
 		objectAction = ""
 
-        if (Config.debug()):
-		print "OBJECTACTION=%s" % objectAction
+	if (Config.debug()):
+		print("OBJECTACTION=%s" % objectAction)
 
-        validate = Validate.checkForValidate(root)
+	validate = Validate.checkForValidate(root)
 
-        if (Config.debug()):
-		print "VALIDATE=%s" % validate
+	if (Config.debug()):
+		print("VALIDATE=%s" % validate)
 
-        outgoingXMLData = BuildResponse.buildHeader(root)
+	outgoingXMLData = BuildResponse.buildHeader(root)
 
 
-        if (Config.debug()):
-        	print("objectServerID = %s" % objectServerID)
+	if (Config.debug()):
+		print("objectServerID = %s" % objectServerID)
 
 
 	# we have the objectServerID so now we can choose the correct
@@ -46,12 +47,12 @@ def Execute_Send_Text(root):
 
 	if (objectServerID == "ST-1"):	
 
-                #check for validate request
-                if (validate == "YES"):
-                        outgoingXMLData += Validate.buildValidateResponse("YES")
-                        outgoingXMLData += BuildResponse.buildFooter()
+		#check for validate request
+		if (validate == "YES"):
+			outgoingXMLData += Validate.buildValidateResponse("YES")
+			outgoingXMLData += BuildResponse.buildFooter()
 
-                        return outgoingXMLData
+			return outgoingXMLData
 	
 		
 		responseData = "OK"
@@ -60,19 +61,19 @@ def Execute_Send_Text(root):
 		f.write( objectAction)      
 		f.close()
 
-                outgoingXMLData += BuildResponse.buildResponse(responseData)
+		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
 
 
-        else:
-                # invalid RaspiConnect Code
-                outgoingXMLData += Validate.buildValidateResponse("NO")
+	else:
+		# invalid RaspiConnect Code
+		outgoingXMLData += Validate.buildValidateResponse("NO")
 
 
 
-        outgoingXMLData += BuildResponse.buildFooter()
-        if (Config.debug()):
-        	print outgoingXMLData
+	outgoingXMLData += BuildResponse.buildFooter()
+	if (Config.debug()):
+		print(outgoingXMLData)
 
 	return outgoingXMLData
 

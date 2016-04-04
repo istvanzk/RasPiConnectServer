@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 # Filename: ExecuteMeter.py
 # Version 2.2 03/13/13 RV MiloCreek
+# Version 3.0 04.04.2016 IzK (Python3.4+)
 
 import Config
 
@@ -17,18 +18,18 @@ def Execute_Meter(root):
       # find the interface object type
 
 
-        objectServerID = root.find("./OBJECTSERVERID").text
-        objectID = root.find("./OBJECTID").text
+	objectServerID = root.find("./OBJECTSERVERID").text
+	objectID = root.find("./OBJECTID").text
 
-        if (Config.debug()):
-        	print("objectServerID = %s" % objectServerID)
+	if (Config.debug()):
+		print(("objectServerID = %s" % objectServerID))
 
-        validate = Validate.checkForValidate(root)
+	validate = Validate.checkForValidate(root)
 
-        if (Config.debug()):
-        	print "VALIDATE=%s" % validate
+	if (Config.debug()):
+		print("VALIDATE=%s" % validate)
 
-        outgoingXMLData = BuildResponse.buildHeader(root)
+	outgoingXMLData = BuildResponse.buildHeader(root)
 
 
 	# we have the objectServerID so now we can choose the correct
@@ -42,29 +43,29 @@ def Execute_Meter(root):
 	if (objectServerID == "M-1"):	
 
 
-                #check for validate request
-                if (validate == "YES"):
-                        outgoingXMLData += Validate.buildValidateResponse("YES")
-                        outgoingXMLData += BuildResponse.buildFooter()
+		#check for validate request
+		if (validate == "YES"):
+			outgoingXMLData += Validate.buildValidateResponse("YES")
+			outgoingXMLData += BuildResponse.buildFooter()
 
-                        return outgoingXMLData
+			return outgoingXMLData
 
 		import random
-        	if (Config.debug()):
-	        	print random.randrange(0,9)
+		if (Config.debug()):
+			print(random.randrange(0,9))
 		voltage = 5.0 + (random.randrange(0,9)-5)/10.0
 		responseData = "%f" % voltage
-                outgoingXMLData += BuildResponse.buildResponse(responseData)
+		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
 	# M-2
 	elif (objectServerID == "M-2"):	
 
-                #check for validate request
-                if (validate == "YES"):
-                        outgoingXMLData += Validate.buildValidateResponse("YES")
-                        outgoingXMLData += BuildResponse.buildFooter()
+		#check for validate request
+		if (validate == "YES"):
+			outgoingXMLData += Validate.buildValidateResponse("YES")
+			outgoingXMLData += BuildResponse.buildFooter()
 
-                        return outgoingXMLData
+			return outgoingXMLData
 
 		p1 = subprocess.Popen(['ps', 'xaf'], stdout=subprocess.PIPE)
 		p3 = subprocess.Popen(['wc', '-l'], stdin=p1.stdout,stdout=subprocess.PIPE)
@@ -72,15 +73,15 @@ def Execute_Meter(root):
 		output = p3.communicate()[0]
 		numberofprocesses = int(output)
 		responseData = "%i" % numberofprocesses
-                outgoingXMLData += BuildResponse.buildResponse(responseData)
-        else:
-                # invalid RaspiConnect Code
-                outgoingXMLData += Validate.buildValidateResponse("NO")
+		outgoingXMLData += BuildResponse.buildResponse(responseData)
+	else:
+		# invalid RaspiConnect Code
+		outgoingXMLData += Validate.buildValidateResponse("NO")
 
 
-        outgoingXMLData += BuildResponse.buildFooter()
+	outgoingXMLData += BuildResponse.buildFooter()
 
-        return outgoingXMLData
+	return outgoingXMLData
 
 
 
