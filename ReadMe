@@ -19,7 +19,7 @@ Forked Release
 Updated to work with Python3.4+. Main changes compared to the original milocreek/RasPiConnectServer are:
 - The web module was replaced by the cherrypy module to provide additional functionalities.
 - Updated all python files in config, local, RasPilib and ExecuteFiles to work with Pyhton3.4+. The Adafruit files have not been updated yet.
-- The local/Local.py uses a dispatcher class to register handlers for the the different objectServerID.
+- The local/LocalExample.py uses a dispatcher class to register handlers for the the different objectServerID.
 - The rpiconn.sh script was added to run the RasPiConnectServer as a service via init.d
 
 This is the RasPiConnectServer designed for the RasPiConnect App available on the Apple AppStore

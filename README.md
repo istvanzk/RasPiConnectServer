@@ -13,7 +13,7 @@ Main changes compared to the original milocreek/RasPiConnectServer are:
 
 2. Updated all python files in config, local, RasPilib and ExecuteFiles to work with Pyhton3.4+. The Adafruit files have not been updated yet.
 
-3. The local/Local.py uses a dispatcher class to register handlers for the the different objectServerID.
+3. The local/LocalExample.py uses a dispatcher class to register handlers for the the different objectServerID.
 
 4. The rpiconn.sh script was added to run the RasPiConnectServer as a service via init.d
 
