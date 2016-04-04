@@ -1,7 +1,8 @@
-#!/usr/bin/python 
+#!/usr/local/bin/python3 
 # Filename: local.py 
 # MiloCreek BP MiloCreek 
 # Version 3.0 6/11/2014 
+# Version 3.4 04.04.2016 IzK (Python3.4+)
 # 
 # Local Execute Objects for RasPiConnect  
 # to add Execute objects, modify this file 
