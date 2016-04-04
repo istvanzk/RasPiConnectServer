@@ -6,7 +6,6 @@
 import xml.etree.ElementTree as ET
 import Config
 
-
 def buildHeader(root):
 
 
