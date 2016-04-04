@@ -442,8 +442,10 @@ def FFF_func(list_par, bValidate):
 		return "VALIDATED"
 
 	responseData = ""
+	objectName   = list_par[1]
+	objectAction = list_par[2]
 	
-	# ... #1
+	# Option #1
 	if list_par[0] == 1:
 		responseData = "OK"
 		
