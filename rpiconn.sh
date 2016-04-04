@@ -16,7 +16,7 @@
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
 #PATH=PATH:/usr/local/bin/rpicam:/usr/local/bin
-DIR=/home/pi/RasPi1
+DIR=/home/pi/RasPiConnectServer3
 DAEMON=RasPiConnectServer.py
 DAEMON_NAME=rpiconn
 
