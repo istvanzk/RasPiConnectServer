@@ -1,6 +1,8 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 # Filename: ExecuteActionButton.py
 # Version 2.5 07/03/13 RV MiloCreek
+# Version 3.0 04.04.2016 IzK (Python3.4+)
+
 import Config
 
 import subprocess
@@ -18,25 +20,25 @@ def Execute_Action_Button(root):
 	# conditionally import BlinkM
 	if (Config.i2c_demo()):
 		from pyblinkm import BlinkM, Scripts
-        
+	
 	
 	
 	# find the interface object type
 
-        objectServerID = root.find("./OBJECTSERVERID").text
-        objectName = root.find("./OBJECTNAME").text
-        objectFlags = root.find("./OBJECTFLAGS").text
+	objectServerID = root.find("./OBJECTSERVERID").text
+	objectName = root.find("./OBJECTNAME").text
+	objectFlags = root.find("./OBJECTFLAGS").text
 
-        validate = Validate.checkForValidate(root)
+	validate = Validate.checkForValidate(root)
 
-        if (Config.debug()):
-		print "VALIDATE=%s" % validate
+	if (Config.debug()):
+		print("VALIDATE=%s" % validate)
 
-        outgoingXMLData = BuildResponse.buildHeader(root)
+	outgoingXMLData = BuildResponse.buildHeader(root)
 
 
-        if (Config.debug()):
-        	print("objectServerID = %s" % objectServerID)
+	if (Config.debug()):
+		print("objectServerID = %s" % objectServerID)
 
 
 	# we have the objectServerID so now we can choose the correct
@@ -47,12 +49,12 @@ def Execute_Action_Button(root):
 	if (objectServerID == "FB-1"):	
 		# do a toggle
 
-                #check for validate request
-                if (validate == "YES"):
-                        outgoingXMLData += Validate.buildValidateResponse("YES")
-                        outgoingXMLData += BuildResponse.buildFooter()
+		#check for validate request
+		if (validate == "YES"):
+			outgoingXMLData += Validate.buildValidateResponse("YES")
+			outgoingXMLData += BuildResponse.buildFooter()
 
-                        return outgoingXMLData
+			return outgoingXMLData
 
 
 		responseData = "XXX"
@@ -72,7 +74,7 @@ def Execute_Action_Button(root):
 		else: 
 			responseData = objectName
 			
-                outgoingXMLData += BuildResponse.buildResponse(responseData)
+		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
 
 
@@ -81,15 +83,15 @@ def Execute_Action_Button(root):
 	elif (objectServerID == "B-1"):	
 		# do a toggle
 
-                #check for validate request
-                if (validate == "YES"):
-                        outgoingXMLData += Validate.buildValidateResponse("YES")
-                        outgoingXMLData += BuildResponse.buildFooter()
+		#check for validate request
+		if (validate == "YES"):
+			outgoingXMLData += Validate.buildValidateResponse("YES")
+			outgoingXMLData += BuildResponse.buildFooter()
 
-                        return outgoingXMLData
+			return outgoingXMLData
 
 		if (Config.debug()):
-			print "Config.i2c_demo=%i" % Config.i2c_demo()
+			print("Config.i2c_demo=%i" % Config.i2c_demo())
 
 
 		if (Config.i2c_demo()):
@@ -97,36 +99,36 @@ def Execute_Action_Button(root):
 			blinkm = BlinkM(1,0xb)
 			blinkm.reset()
 
-        		try:
-                		blinkm.go_to(0, 0, 255)
+			try:
+				blinkm.go_to(0, 0, 255)
 				time.sleep(0.2)
-                		blinkm.go_to(0, 255, 0)
+				blinkm.go_to(0, 255, 0)
 				responseData = "OK"
 
-        		except IOError as e:
-                		#blinkm.reset()
-                		print "I/O error({0}): {1}".format(e.errno, e.strerror)
+			except IOError as e:
+				#blinkm.reset()
+				print("I/O error({0}): {1}".format(e.errno, e.strerror))
 				responseData = "FAILED"
-        		except:
-                		blinkm.reset()
-                		print "Unexpected error:", sys.exc_info()[0]
-                		raise
+			except:
+				blinkm.reset()
+				print("Unexpected error:", sys.exc_info()[0])
+				raise
 
 		responseData = "OK"
 
-                outgoingXMLData += BuildResponse.buildResponse(responseData)
+		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
 
 
-        else:
-                # invalid RaspiConnect Code
-                outgoingXMLData += Validate.buildValidateResponse("NO")
+	else:
+		# invalid RaspiConnect Code
+		outgoingXMLData += Validate.buildValidateResponse("NO")
 
 
 
-        outgoingXMLData += BuildResponse.buildFooter()
-        if (Config.debug()):
-        	print outgoingXMLData
+	outgoingXMLData += BuildResponse.buildFooter()
+	if (Config.debug()):
+		print(outgoingXMLData)
 
 	return outgoingXMLData
 

@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 # Filename: ExecuteTextAndTitle.py
 # Version 1.5 04/01/13 JS MiloCreek
+# Version 3.0 04.04.2016 IzK (Python3.4+)
 
 import Config
 
@@ -15,21 +16,21 @@ import time
 
 def Execute_Text_And_Title(root):
 
-        # find the interface object type
+	# find the interface object type
 
-        objectServerID = root.find("./OBJECTSERVERID").text
-        objectFlags = root.find("./OBJECTFLAGS").text
+	objectServerID = root.find("./OBJECTSERVERID").text
+	objectFlags = root.find("./OBJECTFLAGS").text
 
-        validate = Validate.checkForValidate(root)
+	validate = Validate.checkForValidate(root)
 
-        if (Config.debug()):
-        	print "VALIDATE=%s" % validate
+	if (Config.debug()):
+		print("VALIDATE=%s" % validate)
 
-        outgoingXMLData = BuildResponse.buildHeader(root)
+	outgoingXMLData = BuildResponse.buildHeader(root)
 
 
-        if (Config.debug()):
-        	print("objectServerID = %s" % objectServerID)
+	if (Config.debug()):
+		print("objectServerID = %s" % objectServerID)
 
 	# we have the objectServerID so now we can choose the correct
 	# program
@@ -39,12 +40,12 @@ def Execute_Text_And_Title(root):
 
 	if (objectServerID == "LT-1"):	
 
-                #check for validate request
-                if (validate == "YES"):
-                        outgoingXMLData += Validate.buildValidateResponse("YES")
-                        outgoingXMLData += BuildResponse.buildFooter()
+		#check for validate request
+		if (validate == "YES"):
+			outgoingXMLData += Validate.buildValidateResponse("YES")
+			outgoingXMLData += BuildResponse.buildFooter()
 
-                        return outgoingXMLData
+			return outgoingXMLData
 
 		output = subprocess.check_output(["cat", "/sys/class/thermal/thermal_zone0/temp"])
 		FMOutput = float(output)/1000.0
@@ -54,20 +55,20 @@ def Execute_Text_And_Title(root):
 
 		responseData = "%3.2f, %3.2f, %s" % (FMOutput, FMOutput,"CPU Temp (deg C)")
 
-                outgoingXMLData += BuildResponse.buildResponse(responseData)
+		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
 
 	else:
 
-                # invalid RaspiConnect Code
-                outgoingXMLData += Validate.buildValidateResponse("NO")
+		# invalid RaspiConnect Code
+		outgoingXMLData += Validate.buildValidateResponse("NO")
 
 
-        outgoingXMLData += BuildResponse.buildFooter()
-        if (Config.debug()):
-        	print outgoingXMLData
+	outgoingXMLData += BuildResponse.buildFooter()
+	if (Config.debug()):
+		print(outgoingXMLData)
 
-        return outgoingXMLData
+	return outgoingXMLData
 
 
 # End of ExecuteTextAndTitle.py

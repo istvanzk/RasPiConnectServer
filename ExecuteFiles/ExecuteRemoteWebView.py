@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 # Filename: ExecuteWebView.py
 # Version 2.2 09/17/13 RV MiloCreek
+# Version 3.0 04.04.2016 IzK (Python3.4+)
 
 import Config
 
@@ -16,17 +17,17 @@ import BuildResponse
 
 def Generate_Remote_WebView(root, LOCALURL):
 
-       	if (Config.i2c_demo()):
+	if (Config.i2c_demo()):
 		from pyblinkm import BlinkM, Scripts
 
 	
 	objectServerID = root.find("./OBJECTSERVERID").text
-        objectFlags = root.find("./OBJECTFLAGS").text
+	objectFlags = root.find("./OBJECTFLAGS").text
 	
 	validate = Validate.checkForValidate(root) 
 
-        if (Config.debug()):
-		print "VALIDATE=%s" % validate
+	if (Config.debug()):
+		print("VALIDATE=%s" % validate)
 
 	outgoingXMLData = BuildResponse.buildHeader(root)
 
@@ -46,8 +47,8 @@ def Generate_Remote_WebView(root, LOCALURL):
 		# check to see if i2c_demo is turned on
 		if (Config.i2c_demo()):
 		
-        		if (Config.debug()):
-				print "Config.i2c_demo passed as True" 
+			if (Config.debug()):
+				print("Config.i2c_demo passed as True") 
 
 
 			# Yes, it is on
@@ -79,12 +80,12 @@ def Generate_Remote_WebView(root, LOCALURL):
 				pressureData = "%.2f hPa" % (pressure / 100.0)
 
 			except IOError as e:
-    				exceptionCountBMP = exceptionCountBMP + 1	
-				print "I/O error({0}): {1}".format(e.errno, e.strerror)
+				exceptionCountBMP = exceptionCountBMP + 1
+				print("I/O error({0}): {1}".format(e.errno, e.strerror))
 			except:
-    				exceptionCountBMP = exceptionCountBMP + 1	
-    				print "Unexpected error:", sys.exc_info()[0]
-    				raise
+				exceptionCountBMP = exceptionCountBMP + 1	
+				print("Unexpected error:", sys.exc_info()[0])
+				raise
 
 		else:    # now set some values for display since we don't have i2C
 			tempData = "xx.x C (no i2c enabled)" 
@@ -94,17 +95,17 @@ def Generate_Remote_WebView(root, LOCALURL):
 
 		# read an HTML template into aw string		
 		with open ("./Templates/W-1.html", "r") as myfile:
-    			responseData += myfile.read().replace('\n', '')
+			responseData += myfile.read().replace('\n', '')
 	
 		# replace the URL so it will point to static
-		responseData = responseData.replace("XXX", LOCALURL) 
+		responseData = responseData.replace("XXX", LOCALURL.decode('utf-8')) 
 	
 
 		# now replace the AAA, BBB, etc with the right data
-		responseData = responseData.replace("AAA", subprocess.check_output(["date", ""], shell=True))	
+		responseData = responseData.replace("AAA", subprocess.check_output(["date", ""], shell=True).strip().decode('utf-8'))
 
 		# split uptime at first blank, then at first ,
-		uptimeString = subprocess.check_output(["uptime", ""])	
+		uptimeString = subprocess.check_output(["uptime", ""]).strip().decode('utf-8')
 	
 		uptimeType = uptimeString.split(",")
 		uptimeCount = len(uptimeType)
@@ -123,10 +124,10 @@ def Generate_Remote_WebView(root, LOCALURL):
 
 		responseData = responseData.replace("BBB", uptimeData)	
 
-		usersString = subprocess.check_output(["who", "-q"], shell=False, stderr=subprocess.STDOUT,)	
-		responseData = responseData.replace("CCC", usersString)	
+		usersString = subprocess.check_output(["who", "-q"], shell=False, stderr=subprocess.STDOUT).strip().decode('utf-8')
+		responseData = responseData.replace("CCC", usersString)
 
-		freeString = subprocess.check_output(["free", "-mh"])	
+		freeString = subprocess.check_output(["free", "-mh"]).strip().decode('utf-8')
 		freeSplit = freeString.split("cache: ", 1)
 		freeSplit = freeSplit[1].split("       ", 2)
 		freeSplit = freeSplit[2].split("\nSwap:", 1)
@@ -139,13 +140,13 @@ def Generate_Remote_WebView(root, LOCALURL):
 		responseData = responseData.replace("FFF", pressureData)	
 
 
-		output = subprocess.check_output(["cat", "/sys/class/thermal/thermal_zone0/temp"])
+		output = subprocess.check_output(["cat", "/sys/class/thermal/thermal_zone0/temp"]).strip().decode('utf-8')
 		cpuTemp = "%3.2f C" % (float(output)/1000.0)
 			
 		responseData = responseData.replace("GGG", cpuTemp)	
 
 		try:	
-			freeString = subprocess.check_output(["ifconfig", "eth0"])	
+			freeString = subprocess.check_output(["ifconfig", "eth0"]).strip().decode('utf-8')
 			freeSplit = freeString.split("inet addr:", 1)
 			if (len(freeSplit) > 1):
 				freeSplit = freeSplit[1].split(" ", 1)
@@ -159,17 +160,17 @@ def Generate_Remote_WebView(root, LOCALURL):
 
 		responseData = responseData.replace("HHH", freeData)	
 			
-		responseData = responseData.replace("III", Config.localURL())
+		responseData = responseData.replace("III", Config.localURL().decode('utf-8'))
 		# responseData = responseData.replace("III", "'your external address here'")
 
-		responseData = responseData.replace("JJJ", Config.version_number())
+		responseData = responseData.replace("JJJ", Config.version_number().decode('utf-8'))
 
 		# read latest data from ST-1 SendText control on RasPiConnect 
 
 		try:
 			with open ("./local/ST-1.txt", "r") as myfile:
-    				sendTextData = myfile.read().replace('\n', '')
-   		except IOError:
+				sendTextData = myfile.read().replace('\n', '')
+		except IOError:
 			sendTextData = ""
 
 		responseData = responseData.replace("KKK", sendTextData)
@@ -181,30 +182,30 @@ def Generate_Remote_WebView(root, LOCALURL):
 		
 			time.sleep(0.2)
 
-   	 		try:
+			try:
 	
-               			blinkm.go_to(255, 0, 0)
+				blinkm.go_to(255, 0, 0)
 				time.sleep(0.2)
-               			blinkm.go_to(0, 255, 0)
+				blinkm.go_to(0, 255, 0)
 	
 	
-       			except IOError as e:
-             			#blinkm.reset()
-                		exceptionCount = exceptionCount + 1
-                		print "I/O error({0}): {1}".format(e.errno, e.strerror)
-        		except:
-               			blinkm.reset()
-                		exceptionCount = exceptionCount + 1
-                		print "Unexpected error:", sys.exc_info()[0]
-                		raise
+			except IOError as e:
+				#blinkm.reset()
+				exceptionCount = exceptionCount + 1
+				print("I/O error({0}): {1}".format(e.errno, e.strerror))
+			except:
+				blinkm.reset()
+				exceptionCount = exceptionCount + 1
+				print("Unexpected error:", sys.exc_info()[0])
+				raise
 	
 		#responseData += subprocess.check_output(["cat", "/proc/cpuinfo"])
 		#responseData += subprocess.check_output(["cat", "/proc/meminfo"])
 		
 		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
-        	if (Config.debug()):
-			print outgoingXMLData	
+		if (Config.debug()):
+			print(outgoingXMLData)	
 	elif (objectServerID == "W-2"):
 	
 		#check for validate request
@@ -224,8 +225,8 @@ def Generate_Remote_WebView(root, LOCALURL):
 		responseData += "</head>"
 		
 		responseData += "<body><img src=\""
- 		responseData += LOCALURL 
- 		responseData += "static/"
+		responseData += LOCALURL.decode('utf-8') 
+		responseData += "static/"
 		responseData += imageName
 		responseData += "\" type=\"jpg\" width=\"300\" height=\"300\">"
 		responseData += "<BR>Picture<BR>"
@@ -237,8 +238,8 @@ def Generate_Remote_WebView(root, LOCALURL):
 		
 		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
-        	if (Config.debug()):
-			print outgoingXMLData	
+		if (Config.debug()):
+			print(outgoingXMLData)	
 
 	else:
 		# invalid RaspiConnect Code

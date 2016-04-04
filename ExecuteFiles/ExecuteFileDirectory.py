@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 # Filename: ExecuteFileDirectory.py
 # Version 1.0 04/09/13 JS MiloCreek
+# Version 3.0 04.04.2016 IzK (Python3.4+)
 
 import Config
 import glob
@@ -15,19 +16,19 @@ import time
 
 def Execute_File_Directory(root):
 
-        # find the interface object type
+	# find the interface object type
 
-        objectServerID = root.find("./OBJECTSERVERID").text
-        objectFlags = root.find("./OBJECTFLAGS").text
-        objectName = root.find("./OBJECTNAME").text
-
-
-
-        outgoingXMLData = BuildResponse.buildHeader(root)
+	objectServerID = root.find("./OBJECTSERVERID").text
+	objectFlags = root.find("./OBJECTFLAGS").text
+	objectName = root.find("./OBJECTNAME").text
 
 
-        if (Config.debug()):
-        	print("objectServerID = %s" % objectServerID)
+
+	outgoingXMLData = BuildResponse.buildHeader(root)
+
+
+	if (Config.debug()):
+		print(("objectServerID = %s" % objectServerID))
 
 
 	# we have the objectServerID so now we can choose the correct
@@ -36,8 +37,8 @@ def Execute_File_Directory(root):
 
 	if (objectServerID == "FDC-1"):	
 
-		print glob.glob("ClientXMLConfigFiles/*.xml")
-	 	file_list = glob.glob("ClientXMLConfigFiles/*.xml")
+		print(glob.glob("ClientXMLConfigFiles/*.xml"))
+		file_list = glob.glob("ClientXMLConfigFiles/*.xml")
 		responseData = ""
 
 		for pathname in file_list:
@@ -45,39 +46,39 @@ def Execute_File_Directory(root):
 			responseData += "<FILENAME>"
 			responseData += os.path.basename(pathname)			
 			responseData += "</FILENAME>"
-                
+		
 
 		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
 
-        else:
-                # invalid RaspiConnect Code
-                outgoingXMLData += Validate.buildValidateResponse("NO")
+	else:
+		# invalid RaspiConnect Code
+		outgoingXMLData += Validate.buildValidateResponse("NO")
 
 
 
-        outgoingXMLData += BuildResponse.buildFooter()
-        if (Config.debug()):
-        	print outgoingXMLData
+	outgoingXMLData += BuildResponse.buildFooter()
+	if (Config.debug()):
+		print(outgoingXMLData)
 
 	return outgoingXMLData
 
 
 def Execute_File_Read(root):
 
-        # find the interface object type
+	# find the interface object type
 
-        objectServerID = root.find("./OBJECTSERVERID").text
-        objectFlags = root.find("./OBJECTFLAGS").text
-        objectName = root.find("./OBJECTNAME").text
-
-
-
-        outgoingXMLData = BuildResponse.buildHeader(root)
+	objectServerID = root.find("./OBJECTSERVERID").text
+	objectFlags = root.find("./OBJECTFLAGS").text
+	objectName = root.find("./OBJECTNAME").text
 
 
-        if (Config.debug()):
-        	print("objectServerID = %s" % objectServerID)
+
+	outgoingXMLData = BuildResponse.buildHeader(root)
+
+
+	if (Config.debug()):
+		print("objectServerID = %s" % objectServerID)
 
 
 	# we have the objectServerID so now we can choose the correct
@@ -88,47 +89,47 @@ def Execute_File_Read(root):
 
 		responseData = ""
 
-		print os.getcwd()
+		print(os.getcwd())
 
 		with open ("./ClientXMLConfigFiles/"+objectName, "r") as myfile:
     			responseData=myfile.read().replace('\n', '')
 				
-                
+		
 
 		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
 
-        else:
-                # invalid RaspiConnect Code
-                outgoingXMLData += Validate.buildValidateResponse("NO")
+	else:
+		# invalid RaspiConnect Code
+		outgoingXMLData += Validate.buildValidateResponse("NO")
 
 
 
-        outgoingXMLData += BuildResponse.buildFooter()
-        if (Config.debug()):
-        	print outgoingXMLData
+	outgoingXMLData += BuildResponse.buildFooter()
+	if (Config.debug()):
+		print(outgoingXMLData)
 
 	return outgoingXMLData
 
 
 def Execute_File_Write(root):
 
-        # find the interface object type
+	# find the interface object type
 
-        objectServerID = root.find("./OBJECTSERVERID").text
-        objectFlags = root.find("./OBJECTFLAGS").text
-        objectName = root.find("./OBJECTNAME").text
+	objectServerID = root.find("./OBJECTSERVERID").text
+	objectFlags = root.find("./OBJECTFLAGS").text
+	objectName = root.find("./OBJECTNAME").text
 	objectResponseBody = root.find("./OBJECTRESPONSEBODY").text 
 
 
-        outgoingXMLData = BuildResponse.buildHeader(root)
+	outgoingXMLData = BuildResponse.buildHeader(root)
 
 
-        if (Config.debug()):
-        	print("objectServerID = %s" % objectServerID)
+	if (Config.debug()):
+		print(("objectServerID = %s" % objectServerID))
 
-        if (Config.debug()):
-        	print("objectResponseBody = %s" % objectResponseBody)
+	if (Config.debug()):
+		print(("objectResponseBody = %s" % objectResponseBody))
 
 
 	# we have the objectServerID so now we can choose the correct
@@ -140,7 +141,7 @@ def Execute_File_Write(root):
 
 		
 					
-                
+		
 
 		myfile = open("./ClientXMLConfigFiles/"+objectName, "w")
 		myfile.write(objectResponseBody)
@@ -148,15 +149,15 @@ def Execute_File_Write(root):
 		responseData = "OK"
 		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
-        else:
-                # invalid RaspiConnect Code
-                outgoingXMLData += Validate.buildValidateResponse("NO")
+	else:
+		# invalid RaspiConnect Code
+		outgoingXMLData += Validate.buildValidateResponse("NO")
 
 
 
-        outgoingXMLData += BuildResponse.buildFooter()
-        if (Config.debug()):
-        	print outgoingXMLData
+	outgoingXMLData += BuildResponse.buildFooter()
+	if (Config.debug()):
+		print(outgoingXMLData)
 
 	return outgoingXMLData
 

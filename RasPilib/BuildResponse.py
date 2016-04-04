@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 # Filename: BuildResponse.py
 # Version 1.0 03/17/13 RV MiloCreek
-# Version 2.0 04.04.2016 IzK (Python3.4)
+# Version 3.0 04.04.2016 IzK (Python3.4+)
 
 import xml.etree.ElementTree as ET
 import Config

@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 # Filename: ExecuteSingleLED.py
 # Version 2.7 07/29/13 RV MiloCreek
+# Version 3.0 04.04.2016 IzK (Python3.4+)
 
 import Config
 
@@ -18,21 +19,21 @@ if (Config.i2c_demo()):
 
 def Execute_Single_LED(root):
 
-        # find the interface object type
+	# find the interface object type
 
-        objectServerID = root.find("./OBJECTSERVERID").text
-        objectFlags = root.find("./OBJECTFLAGS").text
+	objectServerID = root.find("./OBJECTSERVERID").text
+	objectFlags = root.find("./OBJECTFLAGS").text
 
-        validate = Validate.checkForValidate(root)
+	validate = Validate.checkForValidate(root)
 
-        if (Config.debug()):
-        	print "VALIDATE=%s" % validate
+	if (Config.debug()):
+		print("VALIDATE=%s" % validate)
 
-        outgoingXMLData = BuildResponse.buildHeader(root)
+	outgoingXMLData = BuildResponse.buildHeader(root)
 
 
-        if (Config.debug()):
-        	print("objectServerID = %s" % objectServerID)
+	if (Config.debug()):
+		print("objectServerID = %s" % objectServerID)
 
 	# we have the objectServerID so now we can choose the correct
 	# program
@@ -43,12 +44,12 @@ def Execute_Single_LED(root):
 
 	if (objectServerID == "L-1"):	
 
-                #check for validate request
-                if (validate == "YES"):
-                        outgoingXMLData += Validate.buildValidateResponse("YES")
-                        outgoingXMLData += BuildResponse.buildFooter()
+		#check for validate request
+		if (validate == "YES"):
+			outgoingXMLData += Validate.buildValidateResponse("YES")
+			outgoingXMLData += BuildResponse.buildFooter()
 
-                        return outgoingXMLData
+			return outgoingXMLData
 
 		output = subprocess.check_output(["date", "+%s"])
 		ledoutput = int(output)%7
@@ -58,20 +59,20 @@ def Execute_Single_LED(root):
 		responseData = "%i" % ledoutput
 
 
-                outgoingXMLData += BuildResponse.buildResponse(responseData)
+		outgoingXMLData += BuildResponse.buildResponse(responseData)
 
 
 	else:
 
-                # invalid RaspiConnect Code
-                outgoingXMLData += Validate.buildValidateResponse("NO")
+		# invalid RaspiConnect Code
+		outgoingXMLData += Validate.buildValidateResponse("NO")
 
 
-        outgoingXMLData += BuildResponse.buildFooter()
-        if (Config.debug()):
-        	print outgoingXMLData
+	outgoingXMLData += BuildResponse.buildFooter()
+	if (Config.debug()):
+		print(outgoingXMLData)
 
-        return outgoingXMLData
+	return outgoingXMLData
 
 
 # End of ExecuteSingleLED.py
