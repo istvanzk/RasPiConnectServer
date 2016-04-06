@@ -17,6 +17,7 @@ import cherrypy
 from cherrypy import tools
 from cherrypy import Tool
 import logging
+import logging.handlers
 
 import xml.etree.ElementTree as ET
 from xml.parsers.expat import ExpatError
