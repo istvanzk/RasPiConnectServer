@@ -3,8 +3,7 @@
 # Version 2.9 9/07/13 RV MiloCreek
 # Version 3.0 04.04.2016 IzK (Python3.4+ and CherryPy)
 
-#set up sub directories
-
+# Set up sub directories
 import sys
 sys.path.append('./Adafruit')
 sys.path.append('./ExecuteFiles')
@@ -12,22 +11,20 @@ sys.path.append('./RasPilib')
 sys.path.append('./local')
 sys.path.append('./config')
 
-# configuration constants
-
-import Config
-
-# system imports
-
+# System imports
 import hashlib
 import cherrypy
 from cherrypy import tools
 from cherrypy import Tool
+import logging
 
 import xml.etree.ElementTree as ET
 from xml.parsers.expat import ExpatError
 
-# RasPiConnectServer execute command routines
+# Configuration constants
+import Config
 
+# RasPiConnectServer execute command routines
 import ExecuteServerStatus
 import ExecuteMeter
 import ExecuteBarMeter
@@ -40,9 +37,11 @@ import ExecuteSendText
 import ExecuteFileDirectory
 
 
+# Logging parameters
+LOGLEVEL = logging.INFO
+LOGFILEBYTES = 3*102400
 
 # RasPiConnectServer interface constants
-
 REMOTE_WEBVIEW_UITYPE = 1
 ACTION_BUTTON_UITYPE = 16
 FEEDBACK_ACTION_BUTTON_UITYPE = 17
@@ -61,9 +60,8 @@ SEND_TEXT_UITYPE = 34
 FILE_DIRECTORY_CALL = 8192
 FILE_READ_CALL = 16384
 FILE_WRITE_CALL = 32768
+# End interface constants
 
-
-# end interface constants
 
 # Check for user imports
 local_present = True
@@ -413,18 +411,54 @@ class WebService(object):
 
 
 
+# Root logger (logging.*)
+rootlog   = logging.getLogger()
+hndl_root = logging.handlers.RotatingFileHandler(filename='raspics.log', mode='w', maxBytes=LOGFILEBYTES, backupCount=5, encoding='utf8')
+formatter = logging.Formatter('%(asctime)s [%(levelname)s] (%(threadName)-10s) %(message)s')
+hndl_root.setLevel(LOGLEVEL)
+hndl_root.setFormatter(formatter)
+
+# Cherrypy loggers
+# Based on http://docs.cherrypy.org/en/latest/basics.html#logging
+cp_access = logging.getLogger('cherrypy.access')
+cp_error  = logging.getLogger('cherrypy.error')
+hndl_access = logging.handlers.RotatingFileHandler(filename='access.log', mode='w', maxBytes=LOGFILEBYTES, backupCount=5, encoding='utf8')
+hndl_error  = logging.handlers.RotatingFileHandler(filename='error.log', mode='w', maxBytes=LOGFILEBYTES, backupCount=5, encoding='utf8')
+void_formatter = logging.Formatter('')
+hndl_access.setLevel(logging.INFO)
+hndl_access.setFormatter(void_formatter)
+hndl_error.setLevel(logging.INFO)
+hndl_error.setFormatter(void_formatter)
+
 if __name__ == '__main__':
+
+	# Main server configuration
 	http_conf = {
 		'global':{
 			'server.socket_host': Config.hostAddr().decode('utf-8'),
 			'server.socket_port': Config.web_server_port(),
 			'environment': 'production',
-			'log.screen': True,
-			'log.error_file': 'error.log',
-			'log.access_file': 'access.log'
+			'log.screen': False,
+			'log.error_file': '',
+			'log.access_file': ''
 		}
 	}
 	cherrypy.config.update(http_conf)
+	
+	# Prevent CherryPy from trying to open its log files when the autoreloader kicks in 
+	cherrypy.engine.unsubscribe('graceful', cherrypy.log.reopen_files)
+	
+	# Reconfigure the loggers
+	cp_access.setLevel(logging.INFO)
+	cp_access.addHandler(hndl_access)
+	
+	cp_error.setLevel(logging.INFO)	
+	cp_error.addHandler(hndl_error)
+	
+	rootlog.setLevel(logging.DEBUG)
+	rootlog.addHandler(hndl_root)
+
+	# End point services configurations
 	web_conf =	{	
 		'/': {
 			'tools.secureheaders.on' : True,
@@ -461,6 +495,7 @@ if __name__ == '__main__':
 
 	#cherrypy.quickstart(RasPiService(), '/', rest_conf)
 	
+	# Start the server
 	cherrypy.tree.mount(WebService(), '/w', config = web_conf)		
 	cherrypy.tree.mount(RasPiService(), '/', config = rest_conf)	
 	cherrypy.server.start()

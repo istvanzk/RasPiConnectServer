@@ -6,8 +6,9 @@
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Runs the RasPiConnectServer.py
-# Description:       This is the RasPiConnectServer designed for the RasPiConnect App available on the Apple AppStore### END INIT INFO
+# Short-Description: Runs the /usr/local/bin/RasPiConnectServer.py
+# Description:       This is the RasPiConnectServer designed for the RasPiConnect App available on the Apple AppStore
+### END INIT INFO
 
 # sudo /etc/init.d/NameOfYourScript status/start/stop
 # To register/remove your script to be run at start-up and shutdown:
@@ -16,7 +17,7 @@
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
 #PATH=PATH:/usr/local/bin/rpicam:/usr/local/bin
-DIR=/home/pi/RasPiConnectServer3
+DIR=/usr/local/bin/RasPiConnectServer3
 DAEMON=RasPiConnectServer.py
 DAEMON_NAME=rpiconn
 
